@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
@@ -18,12 +19,13 @@ public class TransactionIngestor {
     Reader reader = Files.newBufferedReader(Paths.get(filePath));
     try (CSVParser parser =
         CSVFormat.DEFAULT.builder().setHeader().setSkipHeaderRecord(true).get().parse(reader)) {
-      for (int i = 0; i < 1000; i++) {
-        CSVRecord record = parser.iterator().next();
+      Iterator<CSVRecord> iterator = parser.iterator();
+      for (int i = 0; i < 1000 && iterator.hasNext(); i++) {
+        CSVRecord record = iterator.next();
         Transaction transaction =
             new Transaction(
                 Integer.parseInt(record.get("step")),
-                record.get("type"),
+                TransactionType.valueOf(record.get("type")),
                 new BigDecimal(record.get("amount")),
                 record.get("nameOrig"),
                 new BigDecimal(record.get("oldbalanceOrg")),
