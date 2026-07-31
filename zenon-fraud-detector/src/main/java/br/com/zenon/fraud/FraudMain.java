@@ -1,5 +1,8 @@
 package br.com.zenon.fraud;
 
+import static java.lang.IO.println;
+
+import br.com.zenon.fraud.models.Transaction;
 import java.io.IOException;
 import java.util.List;
 import java.util.Scanner;
@@ -16,12 +19,16 @@ public class FraudMain {
 
     try (Scanner scanner = new Scanner(System.in)) {
       String filePath = scanner.nextLine();
+      FraudAnalyser fraudAnalyser = new FraudAnalyser(transactionIngestor, filePath);
+      List<Transaction> frauds = fraudAnalyser.getFrauds();
 
-      List<Transaction> transactions = transactionIngestor.getTransactions(filePath);
+      println("Fraud count:" + fraudAnalyser.fraudsCount(frauds));
 
-      for (Transaction transaction : transactions) {
-        System.out.println("Transaction " + transaction);
-      }
+      println("Top 3 frauds:");
+      fraudAnalyser.topThreeFrauds(frauds).forEach(System.out::println);
+
+      println("Top 5 suspect clients:");
+      fraudAnalyser.topFiveSuspectsClients(frauds).forEach(System.out::println);
     }
   }
 }

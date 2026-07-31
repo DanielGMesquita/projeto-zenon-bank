@@ -1,5 +1,7 @@
 package br.com.zenon.fraud;
 
+import br.com.zenon.fraud.enums.TransactionType;
+import br.com.zenon.fraud.models.Transaction;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
@@ -24,7 +26,7 @@ public class TransactionIngestor {
     try (CSVParser parser =
         CSVFormat.DEFAULT.builder().setHeader().setSkipHeaderRecord(true).get().parse(reader)) {
       Iterator<CSVRecord> iterator = parser.iterator();
-      for (int i = 0; i < 1000 && iterator.hasNext(); i++) {
+      for (int i = 0; i < 50000 && iterator.hasNext(); i++) {
         CSVRecord record = iterator.next();
         try (ValidatorFactory factory =
             Validation.byDefaultProvider()
