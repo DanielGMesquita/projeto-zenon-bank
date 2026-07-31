@@ -29,6 +29,11 @@ public class FraudMain {
 
       println("Top 5 suspect clients:");
       fraudAnalyser.topFiveSuspectsClients(frauds).forEach(System.out::println);
+
+      println("Total fraud amount: " + fraudAnalyser.fraudsSum(frauds));
+
+      println("Frauds by type:");
+      fraudAnalyser.fraudsByType(frauds).forEach((type, count) -> println(type + ": " + count));
     }
   }
 }

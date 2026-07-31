@@ -1,5 +1,6 @@
 package br.com.zenon.fraud;
 
+import br.com.zenon.fraud.enums.TransactionType;
 import br.com.zenon.fraud.models.Transaction;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -25,6 +26,15 @@ public class FraudAnalyser {
 
   public int fraudsCount(List<Transaction> frauds) throws IOException {
     return frauds.size();
+  }
+
+  public BigDecimal fraudsSum(List<Transaction> frauds) throws IOException {
+    return frauds.stream().map(Transaction::amount).reduce(BigDecimal.ZERO, BigDecimal::add);
+  }
+
+  public Map<TransactionType, Integer> fraudsByType(List<Transaction> frauds) throws IOException {
+    return frauds.stream()
+        .collect(Collectors.groupingBy(Transaction::type, Collectors.summingInt(t -> 1)));
   }
 
   public Set<String> topFiveSuspectsClients(List<Transaction> frauds) throws IOException {
