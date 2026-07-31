@@ -1,4 +1,4 @@
-package br.com.zenon.fraud;
+package br.com.zenon.fraud.models;
 
 import java.math.BigDecimal;
 

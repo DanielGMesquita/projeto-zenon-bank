@@ -1,5 +1,6 @@
-package br.com.zenon.fraud;
+package br.com.zenon.fraud.models;
 
+import br.com.zenon.fraud.enums.TransactionType;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
