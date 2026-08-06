@@ -40,40 +40,43 @@ public class FraudMain {
 
     try (Scanner scanner = new Scanner(System.in)) {
       String option = scanner.nextLine();
-      if (option.equals("1")) {
-        FraudAnalyser fraudAnalyser = new FraudAnalyser(transactionIngestor, filePath);
-        List<Transaction> frauds = fraudAnalyser.getFrauds();
+      switch (option) {
+        case "1" -> {
+          FraudAnalyser fraudAnalyser = new FraudAnalyser(transactionIngestor, filePath);
+          List<Transaction> frauds = fraudAnalyser.getFrauds();
 
-        println("Fraud count:" + fraudAnalyser.fraudsCount(frauds));
+          println("Fraud count:" + fraudAnalyser.fraudsCount(frauds));
 
-        println("Top 3 frauds:");
-        fraudAnalyser.topThreeFrauds(frauds).forEach(System.out::println);
+          println("Top 3 frauds:");
+          fraudAnalyser.topThreeFrauds(frauds).forEach(System.out::println);
 
-        println("Top 5 suspect clients:");
-        fraudAnalyser.topFiveSuspectsClients(frauds).forEach(System.out::println);
+          println("Top 5 suspect clients:");
+          fraudAnalyser.topFiveSuspectsClients(frauds).forEach(System.out::println);
 
-        println("Total fraud amount: " + fraudAnalyser.fraudsSum(frauds));
+          println("Total fraud amount: " + fraudAnalyser.fraudsSum(frauds));
 
-        println("Frauds by type:");
-        fraudAnalyser.fraudsByType(frauds).forEach((type, count) -> println(type + ": " + count));
-      } else if (option.equals("2")) {
-        System.out.println("Enter the origin client name:");
-        String nameOriginClient = scanner.nextLine();
+          println("Frauds by type:");
+          fraudAnalyser.fraudsByType(frauds).forEach((type, count) -> println(type + ": " + count));
+        }
+        case "2" -> {
+          System.out.println("Enter the origin client name:");
+          String nameOriginClient = scanner.nextLine();
 
-        TransactionListRepository transactionListRepository =
-            new TransactionListRepository(transactionIngestor.getTransactions(filePath));
-        transactionListRepository
-            .getTransactionByOriginClient(nameOriginClient)
-            .ifPresentOrElse(
-                transaction -> System.out.println("Transaction found: " + transaction),
-                () ->
-                    System.out.println(
-                        "No transaction found for origin client: " + nameOriginClient));
-      } else if (option.equals("3")) {
-        List<Transaction> transactions = transactionIngestor.getTransactions(fileWithErrorsPath);
-        System.out.println("Total transactions processed: " + transactions.size());
-      } else {
-        System.out.println("Invalid option. Please select 1, 2, or 3.");
+          TransactionListRepository transactionListRepository =
+              new TransactionListRepository(transactionIngestor.getTransactions(filePath));
+          transactionListRepository
+              .getTransactionByOriginClient(nameOriginClient)
+              .ifPresentOrElse(
+                  transaction -> System.out.println("Transaction found: " + transaction),
+                  () ->
+                      System.out.println(
+                          "No transaction found for origin client: " + nameOriginClient));
+        }
+        case "3" -> {
+          List<Transaction> transactions = transactionIngestor.getTransactions(fileWithErrorsPath);
+          System.out.println("Total transactions processed: " + transactions.size());
+        }
+        default -> System.out.println("Invalid option. Please select 1, 2, or 3.");
       }
     }
   }

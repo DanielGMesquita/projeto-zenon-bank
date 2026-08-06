@@ -26,7 +26,7 @@ public class TransactionIngestor {
     try (CSVParser parser =
         CSVFormat.DEFAULT.builder().setHeader().setSkipHeaderRecord(true).get().parse(reader)) {
       Iterator<CSVRecord> iterator = parser.iterator();
-      for (int i = 0; i < 50000 && iterator.hasNext(); i++) {
+      for (int i = 0; i < 100000 && iterator.hasNext(); i++) {
         CSVRecord record = iterator.next();
         try (ValidatorFactory factory =
             Validation.byDefaultProvider()
