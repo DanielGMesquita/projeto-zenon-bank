@@ -5,6 +5,7 @@ import static java.lang.IO.println;
 import br.com.zenon.fraud.models.Transaction;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.Scanner;
@@ -40,30 +41,37 @@ public class FraudMain {
 
     try (Scanner scanner = new Scanner(System.in)) {
       String option = scanner.nextLine();
+      List<Transaction> transactions = new ArrayList<>();
+      if (option.equals("1") || option.equals("2")) {
+        transactions = transactionIngestor.getTransactions(filePath);
+      } else if (option.equals("3")) {
+        transactions = transactionIngestor.getTransactions(fileWithErrorsPath);
+      }
       switch (option) {
         case "1" -> {
           FraudAnalyser fraudAnalyser = new FraudAnalyser(transactionIngestor, filePath);
-          List<Transaction> frauds = fraudAnalyser.getFrauds();
 
-          println("Fraud count:" + fraudAnalyser.fraudsCount(frauds));
+          println("Fraud count:" + fraudAnalyser.fraudsCount(transactions));
 
           println("Top 3 frauds:");
-          fraudAnalyser.topThreeFrauds(frauds).forEach(System.out::println);
+          fraudAnalyser.topThreeFrauds(transactions).forEach(System.out::println);
 
           println("Top 5 suspect clients:");
-          fraudAnalyser.topFiveSuspectsClients(frauds).forEach(System.out::println);
+          fraudAnalyser.topFiveSuspectsClients(transactions).forEach(System.out::println);
 
-          println("Total fraud amount: " + fraudAnalyser.fraudsSum(frauds));
+          println("Total fraud amount: " + fraudAnalyser.fraudsSum(transactions));
 
           println("Frauds by type:");
-          fraudAnalyser.fraudsByType(frauds).forEach((type, count) -> println(type + ": " + count));
+          fraudAnalyser
+              .fraudsByType(transactions)
+              .forEach((type, count) -> println(type + ": " + count));
         }
         case "2" -> {
           System.out.println("Enter the origin client name:");
           String nameOriginClient = scanner.nextLine();
 
           TransactionListRepository transactionListRepository =
-              new TransactionListRepository(transactionIngestor.getTransactions(filePath));
+              new TransactionListRepository(transactions);
           transactionListRepository
               .getTransactionByOriginClient(nameOriginClient)
               .ifPresentOrElse(
@@ -73,7 +81,6 @@ public class FraudMain {
                           "No transaction found for origin client: " + nameOriginClient));
         }
         case "3" -> {
-          List<Transaction> transactions = transactionIngestor.getTransactions(fileWithErrorsPath);
           System.out.println("Total transactions processed: " + transactions.size());
         }
         default -> System.out.println("Invalid option. Please select 1, 2, or 3.");
